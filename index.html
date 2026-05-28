@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brian Law — EE @ UIUC</title>
+  <style>
+    /* ── Reset & Base ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0e0f11;
+      --surface:   #16181c;
+      --border:    #252830;
+      --text:      #e2e4ea;
+      --muted:     #7a7f91;
+      --accent:    #f97316;   /* orange */
+      --accent2:   #3b82f6;   /* blue  */
+      --radius:    10px;
+      --max:       860px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(14,15,17,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav .logo {
+      font-weight: 700;
+      font-size: .95rem;
+      letter-spacing: .03em;
+      color: var(--text);
+    }
+
+    nav .logo span { color: var(--accent); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      font-size: .875rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+
+    nav ul a:hover, nav ul a.active {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    /* ── Sections ───────────────────────────────────────────────── */
+    section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 6rem 1.5rem 3rem;
+    }
+
+    section:first-of-type { padding-top: 9rem; }
+
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .75rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .divider {
+      width: 36px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: .6rem 0 2rem;
+    }
+
+    /* ── Hero ───────────────────────────────────────────────────── */
+    #about {
+      padding-top: 9rem;
+      padding-bottom: 4rem;
+    }
+
+    .hero-greeting {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+
+    .hero-name {
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+
+    .hero-name .highlight { color: var(--accent); }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      max-width: 520px;
+    }
+
+    .hero-bio {
+      max-width: 580px;
+      color: #b0b4c4;
+      font-size: .975rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: .3rem .9rem;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: .6rem 1.4rem;
+      border-radius: var(--radius);
+      font-size: .875rem;
+      font-weight: 600;
+      transition: opacity .2s, transform .15s;
+      cursor: pointer;
+    }
+
+    .btn:hover { opacity: .88; transform: translateY(-1px); text-decoration: none; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* ── Projects ───────────────────────────────────────────────── */
+    .project-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: border-color .25s, transform .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .project-card:hover { border-color: #363a46; transform: translateY(-2px); }
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card.featured::before { opacity: 1; }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .75rem;
+    }
+
+    .project-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .project-badge {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: rgba(249,115,22,.12);
+      color: var(--accent);
+      border: 1px solid rgba(249,115,22,.25);
+      border-radius: 20px;
+      padding: .2rem .7rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .project-meta {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .project-desc {
+      color: #b0b4c4;
+      font-size: .94rem;
+      line-height: 1.75;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: .6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .highlight-item {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: .65rem .9rem;
+      font-size: .82rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+    }
+
+    .highlight-item .dot {
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+
+    .chip {
+      background: rgba(59,130,246,.1);
+      border: 1px solid rgba(59,130,246,.2);
+      color: #93c5fd;
+      border-radius: 6px;
+      padding: .2rem .65rem;
+      font-size: .75rem;
+      font-weight: 500;
+    }
+
+    /* ── Experience ─────────────────────────────────────────────── */
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 1.5rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .exp-item:last-child { border-bottom: none; }
+
+    .exp-period {
+      font-size: .78rem;
+      color: var(--muted);
+      padding-top: .15rem;
+      line-height: 1.5;
+    }
+
+    .exp-role {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .15rem;
+    }
+
+    .exp-company {
+      font-size: .85rem;
+      color: var(--accent);
+      margin-bottom: .65rem;
+      font-weight: 600;
+    }
+
+    .exp-body {
+      font-size: .9rem;
+      color: #b0b4c4;
+      line-height: 1.7;
+    }
+
+    .exp-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .75rem;
+    }
+
+    .exp-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .15rem .6rem;
+      font-size: .74rem;
+      color: var(--muted);
+    }
+
+    /* ── Contact ────────────────────────────────────────────────── */
+    #contact {
+      padding-bottom: 6rem;
+    }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      max-width: 560px;
+    }
+
+    .contact-card p {
+      color: #b0b4c4;
+      font-size: .95rem;
+      margin-bottom: 1.75rem;
+      line-height: 1.75;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      font-size: .9rem;
+      color: var(--text);
+      padding: .75rem 1rem;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color .2s, background .2s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent);
+      background: rgba(249,115,22,.05);
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .contact-link .icon {
+      width: 36px; height: 36px;
+      background: rgba(249,115,22,.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .contact-link .link-label { color: var(--muted); font-size: .78rem; margin-top: 1px; }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* ── Scroll animation ───────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .exp-item { grid-template-columns: 1fr; gap: .3rem; }
+      .exp-period { margin-bottom: .25rem; }
+      nav ul { gap: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────────── -->
+  <nav>
+    <div class="inner">
+      <span class="logo">Brian<span>.</span></span>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── About ─────────────────────────────────────────────────── -->
+  <section id="about">
+    <p class="hero-greeting">Hey, I'm</p>
+    <h1 class="hero-name">Brian Law<span class="highlight">.</span></h1>
+    <p class="hero-sub">Electrical Engineering student @ UIUC</p>
+
+    <p class="hero-bio">
+      I'm a junior studying Electrical Engineering at the University of Illinois Urbana-Champaign.
+      I enjoy building at the intersection of hardware and software — from implementing
+      System-on-Chip designs on FPGAs to designing custom PCBs with embedded firmware.
+      I'm passionate about digital design, embedded systems, and turning ambitious ideas into
+      working hardware.
+    </p>
+
+    <div class="tags">
+      <span class="tag">FPGA / Digital Design</span>
+      <span class="tag">Embedded Systems</span>
+      <span class="tag">PCB Design</span>
+      <span class="tag">SystemVerilog</span>
+      <span class="tag">C / Firmware</span>
+      <span class="tag">UIUC ECE</span>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#projects">View Projects</a>
+      <a class="btn btn-outline" href="#contact">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- ── Projects ──────────────────────────────────────────────── -->
+  <section id="projects">
+    <p class="section-label">Work</p>
+    <h2>Projects</h2>
+
+    <div class="project-grid">
+
+      <!-- NES Emulator -->
+      <div class="project-card featured fade-up">
+        <div class="project-header">
+          <span class="project-title">NES Emulator on FPGA</span>
+          <span class="project-badge">ECE 385</span>
+        </div>
+        <p class="project-meta">Spartan 7 FPGA · SystemVerilog / Verilog · C (MicroBlaze)</p>
+
+        <p class="project-desc">
+          Implemented a fully functional Mapper 0 NES emulator as a System-on-Chip on the
+          Spartan 7 FPGA (Urbana Board). The design accurately replicates the original NES
+          hardware — including the Ricoh 2A03 CPU and Ricoh 2C02 PPU — and was demonstrated
+          playing Super Mario Bros and Donkey Kong via HDMI output with a real NES controller
+          over USB.
+        </p>
+
+        <div class="project-highlights">
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>Modified open-source 6502 CPU core to replicate the Ricoh 2A03, adding a clock-enable signal to run at 1.789 MHz within a single clock domain</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>Designed the Ricoh 2C02 PPU from scratch in SystemVerilog — full background &amp; sprite rendering, scrolling (v/t/x/w registers), NMI, and OAM DMA state machine</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>Built a memory-mapped bus arbiter routing CPU accesses to PRG ROM, CHR ROM, CPU RAM, PPU registers, and controller ports</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>MicroBlaze soft-processor loads game ROM over AXI BRAM and polls USB HID controller input via the MAX3421E chip</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>VGA → HDMI output at 256×240 @ 60 Hz using HDMI TMDS IP</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>5,593 LUTs · 4,035 flip-flops · 68.5 BRAM blocks · 117.7 MHz max frequency · 0.41 W total power</span>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <span class="chip">SystemVerilog</span>
+          <span class="chip">Verilog</span>
+          <span class="chip">MicroBlaze</span>
+          <span class="chip">AXI</span>
+          <span class="chip">Vivado</span>
+          <span class="chip">Vitis</span>
+          <span class="chip">FPGA</span>
+          <span class="chip">SoC</span>
+          <span class="chip">HDMI/VGA</span>
+        </div>
+        <div style="margin-top:1.25rem;">
+          <a href="https://github.com/brianlaw10/ECE385_NES" target="_blank" rel="noopener"
+             style="font-size:.82rem; color:var(--muted); display:inline-flex; align-items:center; gap:.4rem; transition:color .2s;"
+             onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            brianlaw10/ECE385_NES
+          </a>
+        </div>
+      </div>
+
+      <!-- Iron Man Helmet -->
+      <div class="project-card fade-up">
+        <div class="project-header">
+          <span class="project-title">Bluetooth Iron Man Helmet</span>
+          <span class="project-badge">ECE 395</span>
+        </div>
+        <p class="project-meta">STM32WB07 · 4-layer PCB · BLE / SPI / USART · C Firmware</p>
+
+        <p class="project-desc">
+          Designed and built a wearable Iron Man helmet featuring a Bluetooth-enabled
+          heads-up display, a motorized visor, and eye LEDs — all driven by a custom
+          4-layer PCB. The HUD displays live time and iPhone notifications over BLE,
+          projected through a beam-splitter and magnifying lens assembly into a 3D-printed
+          Iron Man faceplate.
+        </p>
+
+        <div class="project-highlights">
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>Custom 4-layer PCB: dedicated GND plane, power plane (3.3V / 6V / 12.5V / VBAT), and isolated routing zones for sensitive BLE/SPI vs. noisy motor/SMPS circuitry</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>STM32WB07 MCU with analog LPF matching network for the onboard BLE antenna; pairs with iPhone via ANCS (notifications) and CTS (current time)</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>1.54" OLED display (SSD1309) driven over SPI; custom framebuffer, font LUT, and flipped orientation for the beam-splitter optical path</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>Buck converter (7.4V→6V, 3A) + boost converter (6V→12.5V) + LDO (6V→3.3V) power tree from a 2S1P LiPo battery</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>MG90S servo motors controlled via software PWM (SysTick) for visor open/close; capacitive touch sensor for user input</span>
+          </div>
+          <div class="highlight-item">
+            <span class="dot"></span>
+            <span>MOSFET-driven LED eye strips; entire system ≈75 mW (excluding motors/LEDs)</span>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <span class="chip">STM32</span>
+          <span class="chip">BLE / ANCS / CTS</span>
+          <span class="chip">PCB Design</span>
+          <span class="chip">KiCad</span>
+          <span class="chip">SPI</span>
+          <span class="chip">OLED</span>
+          <span class="chip">Buck/Boost</span>
+          <span class="chip">C Firmware</span>
+          <span class="chip">3D Printing</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Experience ─────────────────────────────────────────────── -->
+  <section id="experience">
+    <p class="section-label">Background</p>
+    <h2>Experience</h2>
+
+    <div class="exp-list">
+
+      <div class="exp-item fade-up">
+        <div class="exp-period">May – Aug 2026<br>Sterling, VA</div>
+        <div>
+          <p class="exp-role">Embedded Systems FPGA Intern</p>
+          <p class="exp-company">CACI International</p>
+          <p class="exp-body">
+            I validated an RF tuner front-end module for production design candidacy by running a
+            two-phase test protocol — first manually controlling the tuner through the manufacturer's
+            GUI, then writing firmware to interface an ARM core on a ZCU208 evaluation board with
+            the tuner over SPI. Alongside the testing, I developed formal documentation covering
+            system block diagrams, a test configuration BOM, signal chain setup procedures, and
+            step-by-step test plans. From the results I characterized SNR, spurious signals, and
+            frequency resolution, confirming that all measured values matched the datasheet.
+          </p>
+          <div class="exp-chips">
+            <span class="exp-chip">FPGA (ZCU208)</span>
+            <span class="exp-chip">SPI</span>
+            <span class="exp-chip">RF / Signal Chain</span>
+            <span class="exp-chip">Test &amp; Validation</span>
+            <span class="exp-chip">ARM</span>
+            <span class="exp-chip">Defense Tech</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-item fade-up">
+        <div class="exp-period">Aug 2025 – Present<br>Urbana, IL</div>
+        <div>
+          <p class="exp-role">Course Assistant — ECE 110</p>
+          <p class="exp-company">University of Illinois Urbana-Champaign</p>
+          <p class="exp-body">
+            As a CA for UIUC's introductory circuits course, I host office hours, assist TAs
+            during labs with 30+ students, and grade homework. The course covers foundational
+            topics including Thévenin/Norton equivalent circuits, BJT and MOSFET behavior, and
+            general circuit analysis — and working through these concepts with students has
+            deepened my own understanding of the material.
+          </p>
+          <div class="exp-chips">
+            <span class="exp-chip">Teaching</span>
+            <span class="exp-chip">Circuit Analysis</span>
+            <span class="exp-chip">BJTs / MOSFETs</span>
+            <span class="exp-chip">Mentorship</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Contact ───────────────────────────────────────────────── -->
+  <section id="contact">
+    <p class="section-label">Say Hello</p>
+    <h2>Contact</h2>
+
+    <div class="contact-card fade-up">
+      <p>
+        I'm always open to new opportunities, interesting projects, or just chatting about
+        hardware and embedded systems. Feel free to reach out.
+      </p>
+      <div class="contact-links">
+
+        <a class="contact-link" href="mailto:brianjlaw7@gmail.com">
+          <div class="icon">✉</div>
+          <div>
+            <div>brianjlaw7@gmail.com</div>
+            <div class="link-label">Email</div>
+          </div>
+        </a>
+
+        <a class="contact-link" href="https://www.linkedin.com/in/brian-law-42749920b" target="_blank" rel="noopener">
+          <div class="icon">in</div>
+          <div>
+            <div>linkedin.com/in/brian-law-42749920b</div>
+            <div class="link-label">LinkedIn</div>
+          </div>
+        </a>
+
+        <a class="contact-link" href="https://github.com/brianlaw10" target="_blank" rel="noopener">
+          <div class="icon">⌥</div>
+          <div>
+            <div>github.com/brianlaw10</div>
+            <div class="link-label">GitHub</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────── -->
+  <footer>
+    <p>Brian Law · EE @ UIUC · 2026</p>
+  </footer>
+
+  <!-- ── JS: nav highlight + scroll fade ──────────────────────── -->
+  <script>
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav ul a');
+
+    function updateNav() {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 90) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+
+    // Fade-up on scroll
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+</body>
+</html>
