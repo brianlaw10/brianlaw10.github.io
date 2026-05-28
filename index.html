@@ -454,6 +454,39 @@
       transform: none;
     }
 
+    /* ── Project Images ─────────────────────────────────────────── */
+    .project-img {
+      width: 100%;
+      border-radius: 7px;
+      display: block;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .project-img-single { max-height: 850px; }
+
+    .project-img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-img-row img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    @media (max-width: 520px) {
+      .project-img-row { grid-template-columns: 1fr; }
+      .project-img-row img { height: 200px; }
+    }
+
     /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .exp-item { grid-template-columns: 1fr; gap: .3rem; }
@@ -521,6 +554,8 @@
         </div>
         <p class="project-meta">Spartan 7 FPGA · SystemVerilog / Verilog · C (MicroBlaze)</p>
 
+        <img src="nes-demo.jpg" alt="Super Mario Bros running on the FPGA NES emulator" class="project-img project-img-single">
+
         <p class="project-desc">
           Implemented a fully functional Mapper 0 NES emulator as a System-on-Chip on the
           Spartan 7 FPGA (Urbana Board). The design accurately replicates the original NES
@@ -586,6 +621,11 @@
           <span class="project-badge">ECE 395</span>
         </div>
         <p class="project-meta">STM32WB07 · 4-layer PCB · BLE / SPI / USART · C Firmware</p>
+
+        <div class="project-img-row">
+          <img src="helmet-pcb.jpg" alt="Custom 4-layer Iron Man helmet PCB">
+          <img src="helmet-oled.jpg" alt="PCB with OLED HUD displaying time over BLE">
+        </div>
 
         <p class="project-desc">
           Designed and built a wearable Iron Man helmet featuring a Bluetooth-enabled
